@@ -21,6 +21,15 @@ class Environment:
         return self.graph.get(state, [])
     
     def transition(self, state, action):
+        
+        if action not in self.graph.get(state, []):
+            print("Invalid action. Staying in the same state.")
+            return state
+
+        if self.graph.get(action, []) == [] and action != self.goal:
+            print("Blocked cell. Staying in the same state.")
+            return state
+
         return action
 
     def is_goal(self, state):
@@ -28,7 +37,7 @@ class Environment:
 
 graph = {
     (0,0): [(0,1), (1,0)],
-    (0,1): [(0,0), (0,2)],
+    (0,1): [],
     (0,2): [(0,1), (1,2)],
     (1,0): [(0,0), (2,0)],
     (1,2): [(0,2), (2,2)],
@@ -41,6 +50,15 @@ env = Environment(graph, (2,2))
 agent = Agent(env, (0,0))
 print("Starting at:", agent.state)
 
+while not agent.goal_test():
+    actions = agent.perceive()
+    print("Available actions:", actions)
+    choice = eval(input("Choose next state: "))
+    agent.act(choice)
+    print("Current state:", agent.state)
+
+
+print("Goal reached!")
 
 # for neighbor in env.get_actions(agent.state):
 #     print("Neighbor:", neighbor)
@@ -94,15 +112,6 @@ print("Starting at:", agent.state)
 
 
 
-while not agent.goal_test():
-    actions = agent.perceive()
-    print("Available actions:", actions)
-    choice = eval(input("Choose next state: "))
-    agent.act(choice)
-    print("Current state:", agent.state)
-
-
-print("Goal reached!")
 
 # bfs(env, (0,0))
 
